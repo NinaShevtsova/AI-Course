@@ -1,0 +1,22 @@
+{
+  "name": "building-and-extending-framework",
+  "version": "1.0.0",
+  "description": "TypeScript + Playwright framework skeleton built with Page Object Model and Component Object Model patterns.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.3"
+  }
+}
