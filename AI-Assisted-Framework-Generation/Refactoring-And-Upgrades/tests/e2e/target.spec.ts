@@ -1,10 +1,10 @@
 import { expect, test } from '../../src/fixtures/BaseTest';
-import { RefactoringNeedsPageRefactored } from '../../src/pages/RefactoringNeedsPageRefactored';
+import { TargetPage } from '../../src/pages/TargetPage';
 
 /**
  * Coverage for the refactored dropdown actions page object.
  */
-test.describe('RefactoringNeedsPageRefactored', () => {
+test.describe('TargetPage', () => {
   test.beforeEach(async ({ page }) => {
     await page.setContent(`
       <button type="button" data-testid="dropdown-button" aria-haspopup="menu" aria-expanded="false">
@@ -40,25 +40,25 @@ test.describe('RefactoringNeedsPageRefactored', () => {
   });
 
   test('should click Edit from dropdown', async ({ page }) => {
-    const refactoringNeedsPage = new RefactoringNeedsPageRefactored(page);
+    const targetPage = new TargetPage(page);
 
-    await refactoringNeedsPage.clickDropdownByName('Edit');
+    await targetPage.clickDropdownByName('Edit');
 
     await expect(page.getByTestId('selected-action')).toHaveText('Edit');
   });
 
   test('should click Delete from dropdown', async ({ page }) => {
-    const refactoringNeedsPage = new RefactoringNeedsPageRefactored(page);
+    const targetPage = new TargetPage(page);
 
-    await refactoringNeedsPage.clickDropdownByName('Delete');
+    await targetPage.clickDropdownByName('Delete');
 
     await expect(page.getByTestId('selected-action')).toHaveText('Delete');
   });
 
   test('should click Archive from dropdown', async ({ page }) => {
-    const refactoringNeedsPage = new RefactoringNeedsPageRefactored(page);
+    const targetPage = new TargetPage(page);
 
-    await refactoringNeedsPage.clickDropdownByName('Archive');
+    await targetPage.clickDropdownByName('Archive');
 
     await expect(page.getByTestId('selected-action')).toHaveText('Archive');
   });

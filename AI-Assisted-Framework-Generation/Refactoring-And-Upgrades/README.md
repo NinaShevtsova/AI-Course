@@ -4,7 +4,7 @@ TypeScript + Playwright training project built around Page Object Model conventi
 
 ## Purpose
 
-This project is the working reference implementation inside `AI Framework Generation`.
+This project is the working reference implementation inside `AI-Assisted-Framework-Generation`.
 
 It includes:
 
@@ -30,7 +30,7 @@ It includes:
 |   |   |-- LoginPage.ts
 |   |   |-- ProfilePage.ts
 |   |   |-- RefactoringNeedsPage.ts
-|   |   `-- RefactoringNeedsPageRefactored.ts
+|   |   `-- TargetPage.ts
 |   `-- utils
 |       |-- envHelper.ts
 |       `-- logger.ts
@@ -39,7 +39,7 @@ It includes:
 |   |   |-- home.spec.ts
 |   |   |-- login.spec.ts
 |   |   |-- profile.spec.ts
-|   |   |-- refactored.spec.ts
+|   |   |-- target.spec.ts
 |   |   `-- assets
 |   |       `-- avatar.svg
 |   `-- mock-server.cjs
@@ -103,14 +103,14 @@ Verified suite:
 - `home.spec.ts`
 - `login.spec.ts`
 - `profile.spec.ts`
-- `refactored.spec.ts`
+- `target.spec.ts`
 
 ## Refactoring Example
 
 The project intentionally keeps two versions of the same dropdown workflow:
 
 - `RefactoringNeedsPage.ts` is the before version with three separate methods
-- `RefactoringNeedsPageRefactored.ts` is the after version with one parameterized method
+- `TargetPage.ts` is the after version with one parameterized method
 
 This is useful for code review, refactoring practice, and test coverage analysis.
 

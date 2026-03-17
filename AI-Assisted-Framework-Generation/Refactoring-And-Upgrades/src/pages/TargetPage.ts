@@ -6,7 +6,7 @@ type DropdownOption = 'Edit' | 'Delete' | 'Archive';
 /**
  * Refactored page object that uses one parameterized dropdown action.
  */
-export class RefactoringNeedsPageRefactored extends BasePage {
+export class TargetPage extends BasePage {
   constructor(page: Page) {
     super(page);
   }
