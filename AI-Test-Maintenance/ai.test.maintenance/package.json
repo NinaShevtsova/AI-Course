@@ -1,0 +1,14 @@
+{
+  "name": "ai.test.maintenance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.13.11",
+    "typescript": "^5.8.2"
+  }
+}
