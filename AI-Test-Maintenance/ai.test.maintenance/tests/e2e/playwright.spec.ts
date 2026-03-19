@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PlaywrightHomePage } from '../../src/pages/PlaywrightHomePage.js';
+import { BASE_URL } from '../../src/constants/baseUrl.js';
 
 test.describe('Playwright website', () => {
   test('has title', async ({ page }) => {
@@ -14,6 +15,8 @@ test.describe('Playwright website', () => {
     await expect(homePage.title).toBeVisible();
     await expect(homePage.getStartedButton).toBeVisible();
     await expect(homePage.navigationMenu).toBeVisible();
+    await expect(homePage.navigationMenu).toHaveRole('navigation');
+    await expect(homePage.navigationMenu).toHaveAccessibleName('Main');
   });
 
    test('should navigate to documentation when clicking Get Started', async ({ page }) => {
