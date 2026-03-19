@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { PlaywrightHomePage } from '../../src/pages/PlaywrightHomePage.js';
-import { BASE_URL } from '../../src/constants/baseUrl.js';
+import { testData } from '../../src/fixtures/testData.js';
 
 test.describe('Playwright website', () => {
   test('has title', async ({ page }) => {
@@ -26,7 +26,7 @@ test.describe('Playwright website', () => {
     await homePage.clickGetStarted();
     
     // Verify navigation to documentation worked after clicking Get Started
-    await expect(page).toHaveURL(/\/docs\/intro/);
+    await expect(page).toHaveURL(testData.urls.docs);
     await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(/Installation|Introduction/);
   });
 });
