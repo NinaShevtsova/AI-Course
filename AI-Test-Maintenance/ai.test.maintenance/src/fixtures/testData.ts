@@ -1,3 +1,5 @@
+import { PATHS } from '../constants/baseUrl.js';
+
 export const testData = {
   navigation: {
     docs: 'Docs',
@@ -9,4 +11,5 @@ export const testData = {
     api: /\/docs\/api/,
     community: /\/community/,
   },
+  paths: PATHS,
 };

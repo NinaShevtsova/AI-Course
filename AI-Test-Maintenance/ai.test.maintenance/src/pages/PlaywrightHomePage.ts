@@ -13,11 +13,11 @@ export class PlaywrightHomePage {
   constructor(page: Page) {
     this.page = page;
     this.getStartedButton = page.getByRole('link', { name: 'Get started' });
-    this.docsLink = page.getByRole('link', { name: 'Docs' });
-    this.apiLink = page.getByRole('link', { name: 'API' });
-    this.communityLink = page.getByRole('link', { name: 'Community' });
-    this.title = page.getByRole('heading', { level: 1 }).first();
     this.navigationMenu = page.getByRole('navigation', { name: 'Main' });
+    this.docsLink = this.navigationMenu.getByRole('link', { name: 'Docs', exact: true });
+    this.apiLink = this.navigationMenu.getByRole('link', { name: 'API', exact: true });
+    this.communityLink = this.navigationMenu.getByRole('link', { name: 'Community', exact: true });
+    this.title = page.getByRole('heading', { level: 1 }).first();
   }
 
   get installationHeading(): Locator {
