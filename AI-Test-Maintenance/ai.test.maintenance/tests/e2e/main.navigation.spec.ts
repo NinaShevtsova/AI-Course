@@ -3,49 +3,32 @@ import { PlaywrightHomePage } from '../../src/pages/PlaywrightHomePage.js';
 import { testData } from '../../src/fixtures/testData.js';
 
 test.describe('Main Navigation', () => {
-  test('should display and function navigation buttons: Docs, API, Community', async ({ page }) => {
+  test('TC-001 - should display and function navigation buttons: Docs, API, Community', async ({ page }) => {
     const homePage = new PlaywrightHomePage(page);
-    
-    await homePage.goto();
-    
-    // Accessibility & Role Validation
-    await expect(homePage.docsLink).toBeVisible();
-    await expect(homePage.docsLink).toHaveRole('link');
-    await expect(homePage.docsLink).toHaveAccessibleName('Docs');
-    await expect(homePage.docsLink).toBeEnabled();
-    
-    await expect(homePage.apiLink).toBeVisible();
-    await expect(homePage.apiLink).toHaveRole('link');
-    await expect(homePage.apiLink).toBeVisible();
 
-    await expect(homePage.apiLink).toBeEnabled();
-    
-    await expect(homePage.communityLink).toBeVisible();
-    await expect(homePage.communityLink).toHaveRole('link');
-    await expect(homePage.communityLink).toHaveAccessibleName('Community');
-    await expect(homePage.communityLink).toBeEnabled();
-    
-    // Test Navigation 
-    // Docs link opens the correct page
-    await homePage.clickDocs();
+    await test.step('Navigate to homepage and verify nav links', async () => {
+      await homePage.goto();
+      await homePage.expectNavLinksAccessible();
+    });
 
-    await page.waitForTimeout(2000);
+    await test.step('Navigate to Docs and verify target page', async () => {
+      await homePage.clickDocs();
+      await expect(page).toHaveURL(testData.urls.docs);
+      await expect(page.getByRole('heading', { name: 'Installation', level: 1 })).toBeVisible();
+    });
 
-    await expect(page).toHaveURL(testData.urls.docs);
-    await expect(page.getByRole('heading', { name: 'Installation', level: 1 })).toBeVisible();
-    
-    await homePage.goto();
-    
-    // API link opens the correct page
-    await homePage.clickAPI();
-    await expect(page).toHaveURL(testData.urls.api);
-    await expect(page.locator('h1')).toBeVisible();
-    
-    await homePage.goto();
-    
-    // Community link opens the correct page
-    await homePage.clickCommunity();
-    await expect(page).toHaveURL(testData.urls.community);
-    await expect(page.getByRole('heading', { name: 'Welcome', level: 1 })).toBeVisible();
+    await test.step('Navigate to API and verify target page', async () => {
+      await homePage.goto();
+      await homePage.clickAPI();
+      await expect(page).toHaveURL(testData.urls.api);
+      await expect(page.getByRole('heading', { name: 'Playwright Library', level: 1 })).toBeVisible();
+    });
+
+    await test.step('Navigate to Community and verify target page', async () => {
+      await homePage.goto();
+      await homePage.clickCommunity();
+      await expect(page).toHaveURL(testData.urls.community);
+      await expect(page.getByRole('heading', { name: 'Welcome', level: 1 })).toBeVisible();
+    });
   });
 });

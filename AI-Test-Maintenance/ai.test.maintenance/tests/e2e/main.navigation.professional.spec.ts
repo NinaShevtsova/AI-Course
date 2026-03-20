@@ -5,6 +5,7 @@ import { testData } from '../../src/fixtures/testData.js';
 test.describe('Main Navigation', () => {
   /**
    * TC-001 Happy Path
+   * Manual Test Case Reference: docs/manual.test.cases.refactoring.md — TC-001
    * Verifies that all three navigation links (Docs, API, Community) are
    * visible, carry correct ARIA roles/names, and route to the expected
    * destination pages — including heading and primary content validation.
