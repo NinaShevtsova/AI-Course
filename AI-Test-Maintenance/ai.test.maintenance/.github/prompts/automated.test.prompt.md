@@ -8,7 +8,7 @@ Project context:
 - Follow PlaywrightHomePage.ts as an example for page object model implementation
 
 Task:
-Based on the manual test case in documents/manual.test.case.md, generate a Playwright automated test.
+Based on the manual test case in docs/manual.test.case.md, generate a Playwright automated test.
 
 Scenario:
 “The main page should display navigation buttons: Docs, API, Community.”
