@@ -3,6 +3,11 @@ import { PlaywrightHomePage } from '../../src/pages/PlaywrightHomePage.js';
 import { testData } from '../../src/fixtures/testData.js';
 
 test.describe('Playwright website', () => {
+  test('intentionally failing test to verify Teams notification', async ({ page }) => {
+    // This test is intentionally failing to trigger the Teams notification
+    expect(1).toBe(2);
+  });
+
   test('has title', async ({ page }) => {
     const homePage = new PlaywrightHomePage(page);
     
