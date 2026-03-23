@@ -35,14 +35,17 @@ jobs:
 
       # Install dependencies using npm ci (clean, reproducible install)
       - name: Install dependencies
+        working-directory: AI-Assisted-Pipeline-Configuration
         run: npm ci
 
       # Install Playwright browsers along with required system dependencies
       - name: Install Playwright browsers
+        working-directory: AI-Assisted-Pipeline-Configuration
         run: npx playwright install --with-deps
 
       # Run all Playwright tests in parallel
       - name: Run Playwright tests
+        working-directory: AI-Assisted-Pipeline-Configuration
         run: npx playwright test
 
       # Upload the HTML report for review (always, even on failure)
@@ -51,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report
-          path: playwright-report
+          path: AI-Assisted-Pipeline-Configuration/playwright-report
 
       # Upload Playwright traces for debugging failed tests (always, even on failure)
       - name: Upload Playwright traces
@@ -59,4 +62,24 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
-          path: test-results/**/trace*.zip
+          path: AI-Assisted-Pipeline-Configuration/test-results/**/trace*.zip
+
+      # Notify Microsoft Teams channel when the workflow fails
+      - name: Notify Teams on failure
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" -d '{
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "summary": "Playwright Tests Failed",
+            "themeColor": "FF0000",
+            "title": "❌ Playwright Tests Failed",
+            "sections": [{
+              "facts": [
+                { "name": "PR Title", "value": "${{ github.event.pull_request.title }}" },
+                { "name": "Author",   "value": "${{ github.event.pull_request.user.login }}" },
+                { "name": "Branch",   "value": "${{ github.head_ref }}" },
+                { "name": "Run",      "value": "[View failed run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" }
+              ]
+            }]
+          }' "${{ secrets.TEAMS_WEBHOOK_URL }}"
