@@ -18,6 +18,13 @@ jobs:
     name: playwright-tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy-pages.outputs.page_url }}
     env:
       CI: true
 
@@ -64,6 +71,42 @@ jobs:
           name: playwright-traces
           path: AI-Assisted-Pipeline-Configuration/test-results/**/trace*.zip
 
+      # Prepare history.json and publish report to GitHub Pages (main branch only)
+      - name: Fetch previous history from gh-pages
+        if: always() && github.ref == 'refs/heads/main'
+        run: |
+          git fetch origin gh-pages 2>/dev/null || true
+          if git show origin/gh-pages:history.json > /tmp/previous-history.json 2>/dev/null; then
+            echo "Previous history found."
+          else
+            echo "[]" > /tmp/previous-history.json
+          fi
+
+      - name: Build history.json
+        if: always() && github.ref == 'refs/heads/main'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          NEW_ENTRY=$(jq -n \
+            --arg timestamp "$TIMESTAMP" \
+            --arg runUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --arg sha "${{ github.sha }}" \
+            --arg ref "${{ github.ref }}" \
+            --arg conclusion "${{ job.status }}" \
+            '{ timestamp: $timestamp, runUrl: $runUrl, sha: $sha, ref: $ref, conclusion: $conclusion }')
+          jq ". + [$NEW_ENTRY]" /tmp/previous-history.json \
+            > AI-Assisted-Pipeline-Configuration/playwright-report/history.json
+
+      - name: Upload Pages artifact
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: AI-Assisted-Pipeline-Configuration/playwright-report
+
+      - name: Deploy to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        id: deploy-pages
+        uses: actions/deploy-pages@v4
+
       # Notify Microsoft Teams channel when the workflow fails
       - name: Notify Teams on failure
         if: failure()
@@ -83,3 +126,43 @@ jobs:
               ]
             }]
           }' "${{ secrets.TEAMS_WEBHOOK_URL }}"
+
+  security-scan:
+    name: security-scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: false
+    env:
+      CI: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - name: Install dependencies
+        working-directory: AI-Assisted-Pipeline-Configuration
+        run: npm ci
+
+      - name: Run npm audit
+        working-directory: AI-Assisted-Pipeline-Configuration
+        run: |
+          npm audit --audit-level=high --json > audit-report.json 2>&1 || AUDIT_EXIT=$?
+          echo "### Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -s audit-report.json ]; then
+            HIGH=$(grep -c '"severity":"high"' audit-report.json || true)
+            CRITICAL=$(grep -c '"severity":"critical"' audit-report.json || true)
+            echo "| Severity | Count |" >> $GITHUB_STEP_SUMMARY
+            echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+            echo "| High     | $HIGH |" >> $GITHUB_STEP_SUMMARY
+            echo "| Critical | $CRITICAL |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No high or critical vulnerabilities found." >> $GITHUB_STEP_SUMMARY
+          fi
+          exit ${AUDIT_EXIT:-0}
